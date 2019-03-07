@@ -1,0 +1,127 @@
+{% load staticfiles %}
+<!doctype html>
+<html>
+<head>
+    <title>Network | Les miserables</title>
+
+    <style type="text/css">
+		html,body{
+			margin: 0;
+			width: 100%;
+			height: 100%;
+			text-align:center;
+		}
+        #mynetwork {
+			margin: 0 auto;
+            width: 70%;
+            height:70%;
+            border: 1px solid lightgray;
+        }
+    </style>
+
+    <script type="text/javascript" src="{% static 'deepmatching/vis.js' %}"></script>
+    <link href="{% static 'deepmatching/vis-network.min.css' %}" rel="stylesheet" type="text/css"/>
+
+    <script type="text/javascript">
+	function overShow(params) {
+	  var showDiv = document.getElementById('showDiv');
+	  showDiv.style.left = params.event.clientX +"px";
+	  showDiv.style.top = params.event.clientY + "px";
+	  showDiv.style.display = 'block';
+	  showDiv.innerHTML = 'Node: '+params.node;
+	 }
+	 
+	 function outHide() {
+	  var showDiv = document.getElementById('showDiv');
+	  showDiv.style.display = 'none';
+	  showDiv.innerHTML = '';
+	 }
+
+
+        function draw() {
+            // create some nodes
+
+			var nodes = [
+			{% for node in nodes1 %}
+			{id:{{node}},label:"{{node}}",group:"网络1",size: 20,font:{size: 50} },
+			{% endfor %}
+			{% for node in nodes2 %}
+			{id:{{node}},label:"{{node}}",group:"网络2",size: 20,font:{size: 50} },
+			{% endfor %}
+			];
+            // create some edges
+			var edges = [
+			{% for e in edges1%}
+				{from:{{e.0}},to:{{e.1}}},
+			{% endfor %}
+			{% for e in edges2%}
+				{from:{{e.0}},to:{{e.1}}},
+			{% endfor %}
+			];
+
+	//legend
+      	var mynetwork = document.getElementById('mynetwork');
+      	var x = -400;
+      	var y = 1500;
+		console.log("x = "+x+"\ty = "+ y);
+     	var step = 350;
+      	nodes.push({id: 1000, x: x, y: y, label: '网络1', group: '网络1', fixed: true, size: 50,physics:false,font:{size: 50} });
+      	nodes.push({id: 1001, x: x+step, y: y, label: '网络2', group: '网络2', size: 50,fixed: true,  physics:false, font:{size: 50} });
+
+            // create a network
+            var container = document.getElementById('mynetwork');
+            var data = {
+                nodes: nodes,
+                edges: edges
+            };
+            var options = {
+                physics: {
+                    forceAtlas2Based: {
+                        gravitationalConstant: -26,
+                        centralGravity: 0.005,
+                        springLength: 230,
+                        springConstant: 0.18
+                    },
+                    maxVelocity: 146,
+                    solver: 'forceAtlas2Based',
+                    timestep: 0.35,
+                    stabilization: {iterations: 150}
+                },
+				groups:{
+					'网络1':{
+						shape: 'dot',
+						color: 'blue'
+					  },
+					'网络2':{
+						shape: 'dot',
+						color: '#109618'
+					  }
+				},
+				interaction: {
+						hover: true
+							 }
+            };
+        var network = new vis.Network(container, data, options);
+
+	    network.on("hoverNode", function(params) {
+	  	console.log(params);
+		overShow(params);
+		});
+
+	    network.on("blurNode", function(params) {
+		outHide(params);
+		});
+
+        }
+    </script>
+    
+</head>
+
+<body onload="draw()">
+<div id="mynetwork"><div class="vis-network" tabindex="900" style="position: relative; overflow: hidden; touch-action: pan-y; user-select: none; -webkit-user-drag: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); width: 100%; height: 100%;"><canvas width="1280" height="544" style="position: relative; touch-action: none; user-select: none; -webkit-user-drag: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); width: 100%; height: 100%;"></canvas></div></div>
+<div id="showDiv" style="position: absolute; background-color:white; border: 1px solid black;"></div>
+<div id="back" style="position: relative;">
+	<br><a href="{{ back }}">返回首页</a>
+</div>
+</body>
+</html>

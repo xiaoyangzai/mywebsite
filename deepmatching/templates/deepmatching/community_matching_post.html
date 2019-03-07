@@ -1,0 +1,134 @@
+{% load staticfiles %}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>网络匹配</title>
+<link rel="stylesheet" href="{% static 'deepmatching/index.css' %}" type="text/css"/>
+
+<script type="text/javascript" src="{% static 'deepmatching/vis.js' %}"></script>
+   <link href="{% static 'deepmatching/vis-network.min.css' %}" rel="stylesheet" type="text/css"/>
+
+<script type="text/javascript">
+	function overShow(params) {
+	  var showDiv = document.getElementById('showDiv');
+	  showDiv.style.left = params.event.clientX - 20 +"px";
+	  showDiv.style.top = params.event.clientY - 30+ "px";
+	  showDiv.style.display = 'block';
+	  var text = 'Node: '+nodes[params.node -1]["label"];
+	  showDiv.innerHTML = text;
+	 }
+	 
+	 function outHide() {
+	  var showDiv = document.getElementById('showDiv');
+	  showDiv.style.display = 'none';
+	  showDiv.innerHTML = '';
+	 }
+
+			var nodes = [
+			{% for node in nodes1 %}
+				{id:{{node}},label:"{{node}}",group:"网络1",size: 50,font:{size: 100} },
+			{% endfor %}
+			{% for node in nodes2 %}
+				{id:{{node}}+{{end}},label:"{{node}}",group:"网络2",size: 50,font:{size: 100} },
+			{% endfor %}
+			];
+            // create some edges
+			var edges = [
+			{% for e in edges1 %}
+				{from:{{e.0}},to:{{e.1}}},
+			{% endfor %}
+			{% for e in edges2 %}
+				{from:{{e.0}}+{{end}},to:{{e.1}}+{{end}},width:5},
+			{% endfor %}
+
+			{% for e in edges3 %}
+				{from:{{e.0}},to:{{e.1}}+{{end}},color:{color:"red",highlight:"red"},width:10},
+			{% endfor %}
+			];
+
+
+        function draw() {
+            // create some nodes
+
+				//legend
+      	var mynetwork = document.getElementById('mynetwork');
+      	var x = -mynetwork.clientWidth / 2 + 550;
+      	var y = -mynetwork.clientHeight/ 2 + 3450;
+		console.log("x = "+x+"\ty = "+ y);
+     	var step = 1050;
+      	nodes.push({id: 1000, x: x, y: y, label: '网络1', group: '网络1', fixed: true, size: 200,physics:false,font:{size: 200} });
+      	nodes.push({id: 1001, x: x+step, y: y, label: '网络2', group: '网络2', size: 200,fixed: true,  physics:false,font:{size: 200} });
+
+            // create a network
+            var container = document.getElementById('mynetwork');
+            var data = {
+                nodes: nodes,
+                edges: edges
+            };
+            var options = {
+				nodes:{
+				shadow: true,
+				borderWidth: 2
+					  },
+                physics: {
+					solver: "forceAtlas2Based",
+					forceAtlas2Based:{
+						gravitationalConstant: -800,
+						springLength:150,
+					},
+                    stabilization: {iterations: 2150},
+                },
+				edges:{
+						smooth: false
+					  },
+				groups:{
+					'网络1':{
+						shape: 'dot',
+						color: 'blue'
+					  },
+					'网络2':{
+						shape: 'dot',
+						color: '#109618'
+					  }
+				},
+				interaction: {
+						hover: true
+							 }
+            };
+        var network = new vis.Network(container, data, options);
+
+	    network.on("hoverNode", function(params) {
+	  	console.log(params);
+		overShow(params);
+		});
+
+	    network.on("blurNode", function(params) {
+		outHide(params);
+		});
+
+        }
+    </script>
+
+</head>
+<body onload="draw()">
+
+<div class="main">
+	<div class="top">DeepMatching</div>
+	<div class="left">
+		<a href="{% url 'graph_matching' %}" >网络匹配</a>
+		<a href="{% url 'community_matching' %}">社区匹配</a>
+	</div>
+
+	<div class="right">
+		<div id="mynetwork" class="mynetwork"></div>
+		<div id="showDiv" style="position: absolute; background-color:white; border: 1px solid black;"></div>
+		<div id="back" style="position: relative; text-align: center;">
+			<br><a href="/deepmatching" >返回首页</a>
+		</div>
+	</div>
+</div>
+
+</body>
+</html>
+

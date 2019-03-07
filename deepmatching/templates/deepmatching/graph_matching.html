@@ -1,0 +1,59 @@
+{% load staticfiles %}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>网络匹配</title>
+<link rel="stylesheet" href="{% static 'deepmatching/index.css' %}" type="text/css"/>
+</head>
+<script type="text/javascript">
+function checkInput(){
+	if(document.getElementById("graph1").value =="")
+	{
+		alert("请选择网络文件1!");
+		return false;
+    }
+	if(document.getElementById("graph2").value =="")
+	{
+		alert("请选择网络文件2!");
+		return false;
+    }
+	return true;
+}
+</script>
+<body>
+<div class="main">
+	<div class="top">DeepMatching</div>
+	<div class="left">
+		<a href="{% url 'graph_matching' %}" >网络匹配</a>
+		<a href="{% url 'community_matching' %}">社区匹配</a>
+	</div>
+	<div class="right">
+		<form action="post_graph_matching/" ENCTYPE="multipart/form-data" method="post" onsubmit="return checkInput();">
+		<table>
+			<tr>
+				<td style="text-align: right;">网络文件1</td>
+				<td><input id="graph1" type="file" placeholder="请选择网络文件1" name="filename1"></td>
+				<td style="text-align: right;">网络文件2</td>
+				<td><input id="graph2" type="file" placeholder="请选择网络文件2" name="filename2"></td>
+			</tr>
+			<tr>
+				<td style="text-align: right;" >Z值</td>
+				<td>
+					<select name="z_score">
+						<option value ="">2</option>
+						<option value ="">3</option>
+						<option value ="">4</option>
+						<option value ="">5</option>
+					</select>
+				</td>
+				<td style="text-align: right;"></td>
+				<td></td>
+			</tr>
+		</table>
+		<input type="submit" class="btn" value="开始匹配"/>
+		</form>
+	</div>
+</div>
+</body>
+</html>
