@@ -27,23 +27,23 @@
 
 			var nodes = [
 			{% for node in nodes1 %}
-				{id:{{node}},label:"{{node}}",group:"网络1",size: 50,font:{size: 100} },
+				{id:{{node.0}},size:{{node.1}}/{{end}}*270,label:"{{node.0}}",group:"网络1",font:{size: 150} },
 			{% endfor %}
 			{% for node in nodes2 %}
-				{id:{{node}}+{{end}},label:"{{node}}",group:"网络2",size: 50,font:{size: 100} },
+				{id:{{node.0}}+{{end}},size:{{node.1}}/{{end}}*250,label:"{{node.0}}",group:"网络2",font:{size: 150} },
 			{% endfor %}
 			];
             // create some edges
 			var edges = [
 			{% for e in edges1 %}
-				{from:{{e.0}},to:{{e.1}}},
+				{from:{{e.0}},to:{{e.1}},width:10},
 			{% endfor %}
 			{% for e in edges2 %}
-				{from:{{e.0}}+{{end}},to:{{e.1}}+{{end}},width:5},
+				{from:{{e.0}}+{{end}},to:{{e.1}}+{{end}},width:10},
 			{% endfor %}
 
 			{% for e in edges3 %}
-				{from:{{e.0}},to:{{e.1}}+{{end}},color:{color:"red",highlight:"red"},width:10},
+				{from:{{e.0}},to:{{e.1}}+{{end}},color:{color:"red",highlight:"red"},width:30},
 			{% endfor %}
 			];
 
@@ -54,7 +54,7 @@
 				//legend
       	var mynetwork = document.getElementById('mynetwork');
       	var x = -mynetwork.clientWidth / 2 + 550;
-      	var y = -mynetwork.clientHeight/ 2 + 3450;
+      	var y = -mynetwork.clientHeight/ 2 + 5450;
 		console.log("x = "+x+"\ty = "+ y);
      	var step = 1050;
       	nodes.push({id: 1000, x: x, y: y, label: '网络1', group: '网络1', fixed: true, size: 200,physics:false,font:{size: 200} });
@@ -74,8 +74,11 @@
                 physics: {
 					solver: "forceAtlas2Based",
 					forceAtlas2Based:{
-						gravitationalConstant: -800,
-						springLength:150,
+						gravitationalConstant: -250,
+						centralGravity: 0.001,
+						springLength:450,
+						springConstant:0.05,
+						avoidOverlap:0,
 					},
                     stabilization: {iterations: 2150},
                 },
@@ -88,7 +91,7 @@
 						color: 'blue'
 					  },
 					'网络2':{
-						shape: 'dot',
+						shape: 'diamond',
 						color: '#109618'
 					  }
 				},

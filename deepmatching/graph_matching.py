@@ -12,7 +12,10 @@ def load_graph(graph_edges):
             graph.add_node(int(line[0])+1,name=line[0])
             graph.add_node(int(line[1])+1,name=line[1])
             graph.add_edge(int(line[0]) + 1,int(line[1]) + 1)
-    return graph.nodes(),graph.edges()
+    nodes_degree = []
+    for node in graph.nodes():
+        nodes_degree.append((node,graph.degree(node)))
+    return nodes_degree,graph.edges()
 
 
 def main():
