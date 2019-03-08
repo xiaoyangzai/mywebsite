@@ -6,7 +6,7 @@ from django.shortcuts import render
 # Create your views here.
 
 from django.http import HttpResponse
-import graph_matching as gm 
+from deepMatching_framework import deepMatching_framework as dm  
 
 def index(request):
     return render(request,"deepmatching/index.html")
@@ -24,18 +24,16 @@ def post_graph_matching(request):
     filecontext2 = ""
     for chunk in ret.chunks():
             filecontext1 += chunk
-    nodes1,edges1 = gm.load_graph(filecontext1)
+    nodes1,edges1,g1 = dm.load_graph_from_edges_string(filecontext1)
     ret = request.FILES.get('filename2')
     for chunk in ret.chunks():
             filecontext2 += chunk
-    nodes2,edges2 = gm.load_graph(filecontext2)
+    nodes2,edges2,g2 = dm.load_graph_from_edges_string(filecontext2)
     end = len(nodes1)
-    edges3 = [(0,34),(1,25),(3,20)]
-    z_score = request.POST.get("zscore")
-    comm_limit_down = request.POST.get("comm_limit_down")
-    comm_limit_up = request.POST.get("comm_limit_up")
-    print "z_score = ",z_score
-    return render(request,'deepmatching/graph_matching_post.html',{'end': end,'nodes1':nodes1,'edges1':edges1,'nodes2':nodes2,'edges2':edges2,'back':back,"edges3":edges3})
+    
+    ch = request.POST.get("ch")
+    matched_ms,z_score,ec = dm.deepmatching_for_samll_scale(g1,g2,ch) 
+    return render(request,'deepmatching/graph_matching_post.html',{'end': end,'nodes1':nodes1,'edges1':edges1,'nodes2':nodes2,'edges2':edges2,'back':back,"edges3":matched_ms,"z_score":z_score,"ch":ch})
 
 def post_community_matching(request):
     back = request.META.get('HTTP_REFERER')
@@ -44,11 +42,11 @@ def post_community_matching(request):
     filecontext2 = ""
     for chunk in ret.chunks():
             filecontext1 += chunk
-    nodes1,edges1 = gm.load_graph(filecontext1)
+    nodes1,edges1 = dm.load_graph_from_edges_string(filecontext1)
     ret = request.FILES.get('filename2')
     for chunk in ret.chunks():
             filecontext2 += chunk
-    nodes2,edges2 = gm.load_graph(filecontext2)
+    nodes2,edges2 = dm.load_graph_from_edges_string(filecontext2)
     end = len(nodes1)
     edges3 = [(0,34),(1,25),(3,20)]
     z_score = request.POST.get("zscore")

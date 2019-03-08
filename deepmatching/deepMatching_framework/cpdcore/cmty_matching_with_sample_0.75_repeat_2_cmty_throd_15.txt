@@ -1,0 +1,82 @@
+########################################################################
+dataset: facebook_combined_undirect_unweighted_nodes_4039_edges_99234.txt
+sample: 0.75
+similarity function: euclidean_distancethrod of the community: 15
+repeated loop count: 2
+Graph Infomation: nodes 4039	edges 88234
+0th loop:
+G1 cmty length distribution: 341 823 521 542 25 56 206 958 35 229 220 19 20 
+G2 cmty length distribution: 357 844 542 315 205 544 149 38 738 207 54 
+dimensions: 90.00
+deepwalk results[cmty-deepwalk-seed]: 339-176-166 0-0-0 0-0-0 537-312-311 0-0-0 52-12-10 204-110-109 463-34-27 35-19-19 207-16-16 0-0-0 0-0-0 0-0-0 
+seed accuracy rate:  0.61710 0.00000 0.00000 0.58240 0.00000 0.25000 0.55051 0.06888 0.54286 0.07767 0.00000 0.00000 0.00000
+1th loop:
+G1 cmty length distribution: 343 317 835 546 567 55 183 152 37 543 204 216 
+G2 cmty length distribution: 333 814 956 544 25 56 205 37 539 208 220 19 
+dimensions: 90.00
+deepwalk results[cmty-deepwalk-seed]: 327-159-147 0-0-0 459-42-35 1-0-0 542-314-313 50-13-11 183-84-76 0-0-0 37-28-28 4-0-0 204-36-36 216-157-156 
+seed accuracy rate:  0.55682 0.00000 0.09642 0.00000 0.58724 0.28947 0.49351 0.00000 0.75676 0.00000 0.17647 0.73585
+accuracy rate array of community mapping: 0.4615 0.5833 
+arverage: 0.52244
+########################################################################
+########################################################################
+dataset: facebook_combined_undirect_unweighted_nodes_4039_edges_99234.txt
+sample: 0.75
+similarity function: euclidean_distancethrod of the community: 15
+repeated loop count: 2
+Graph Infomation: nodes 4039	edges 88234
+0th loop:
+G1 cmty length distribution: 343 314 847 519 544 58 206 152 38 732 230 
+G2 cmty length distribution: 342 322 1000 524 56 203 543 38 730 227 19 
+dimensions: 90.00
+deepwalk results[cmty-deepwalk-seed]: 337-200-62 311-188-28 830-525-42 517-350-26 539-308-64 54-13-6 203-104-20 0-0-0 38-30-1 700-553-51 226-20-0 
+seed accuracy rate:  0.60194 0.56000 0.63636 0.78788 0.65979 0.35294 0.54054 0.00000 1.00000 0.68919 0.00000
+1th loop:
+G1 cmty length distribution: 342 727 1025 745 25 57 49 540 208 223 18 
+G2 cmty length distribution: 337 827 747 544 25 202 470 37 515 231 56 
+dimensions: 90.00
+deepwalk results[cmty-deepwalk-seed]: 332-183-47 0-0-0 470-58-10 538-252-59 25-19-0 53-20-14 37-3-0 0-0-0 207-20-0 0-0-0 0-0-0 
+seed accuracy rate:  0.61842 0.00000 0.58824 0.70238 0.00000 0.66667 0.00000 0.00000 0.00000 0.00000 0.00000
+accuracy rate array of community mapping: 0.9091 0.6364 
+arverage: 0.77273
+########################################################################
+########################################################################
+dataset: facebook_combined_undirect_unweighted_nodes_4039_edges_99234.txt
+sample: 0.75
+similarity function: euclidean_distancethrod of the community: 15
+repeated loop count: 2
+Graph Infomation: nodes 4039	edges 88234
+0th loop:
+G1 cmty length distribution: 336 803 544 25 205 484 48 459 544 260 19 213 55 
+G2 cmty length distribution: 347 316 848 561 60 181 145 37 517 548 230 214 
+dimensions: 90.00
+deepwalk results[cmty-deepwalk-seed]: 333-175-12 0-0-0 535-332-47 0-0-0 181-77-1 469-44-0 36-2-0 459-281-3 531-414-37 230-19-0 0-0-0 210-132-2 54-15-2 
+seed accuracy rate:  0.48000 0.00000 0.55952 0.00000 0.33333 0.00000 0.00000 0.50000 0.59677 0.00000 0.00000 0.50000 0.22222
+1th loop:
+G1 cmty length distribution: 337 817 25 206 543 971 38 517 231 219 19 21 55 
+G2 cmty length distribution: 347 830 25 200 546 977 38 521 226 217 56 
+dimensions: 90.00
+deepwalk results[cmty-deepwalk-seed]: 330-176-8 794-549-41 25-20-1 200-100-6 541-328-18 945-785-42 38-30-0 1-0-0 208-4-0 216-135-4 0-0-0 0-0-0 52-22-1 
+seed accuracy rate:  0.50000 0.48235 1.00000 0.33333 0.66667 0.70000 0.00000 0.00000 0.00000 0.57143 0.00000 0.00000 0.12500
+accuracy rate array of community mapping: 0.7692 0.7692 
+arverage: 0.76923
+########################################################################
+########################################################################
+dataset: facebook_combined_undirect_unweighted_nodes_4039_edges_99234.txt
+sample: 0.75
+similarity function: euclidean_distancethrod of the community: 15
+repeated loop count: 2
+Graph Infomation: nodes 4039	edges 88234
+0th loop:
+G1 cmty length distribution: 356 785 547 25 57 204 315 38 718 517 231 218 
+G2 cmty length distribution: 346 820 1006 544 25 205 543 37 207 217 59 
+dimensions: 60.00
+deepwalk results: 340-186 775-536 541-335 25-24 56-15 203-115 312-8 37-31 0-0 0-0 206-13 217-165 
+1th loop:
+G1 cmty length distribution: 358 1012 518 726 25 59 722 58 231 223 19 20 19 
+G2 cmty length distribution: 347 312 975 541 55 205 760 61 516 231 
+dimensions: 65.00
+deepwalk results: 339-198 508-76 514-331 0-0 0-0 53-17 514-280 50-1 231-27 0-0 0-0 0-0 0-0 
+accuracy rate array of community mapping: 0.8333 0.4615 
+arverage: 0.64744
+########################################################################
