@@ -152,10 +152,10 @@ def mapping_credibility(matches, G1, G2):
     return cred
 
 
-def enbeding_init_matching(G1, G2,matched_dic = None):
+def enbeding_init_matching(G1, G2,matched_dic = None,embedding='DeepWalk'):
     print "initilizating matching....."
     count = 0
-    matches = dm.bipartite_matching(G1, G2,dimensions=100)
+    matches = dm.bipartite_matching(G1, G2,dimensions=100,embedding=embedding)
     print"total matched nodes: %d" % len(matches)
     if matched_dic == None: 
         for match in matches:
@@ -193,12 +193,12 @@ def propagation_matching(matched_ms,G1,G2):
     pz = mapping_credibility(refine_match_nodes, G1, G2)
     return refine_match_nodes,pz,edge_consistency
 
-def deepmatching_for_samll_scale(g1,g2,ch=2):
-    #g1 = load_graph_from_edges_file(graph1)
-    #g2 = load_graph_from_edges_file(graph2)
+def deepmatching_for_samll_scale(g1,g2,ch=2,embedding = 'DeepWalk'):
+    #g1 = load_graph_from_edges_file(g1)
+    #g2 = load_graph_from_edges_file(g2)
     print "initilizating matching..."
     #initilzation mapping
-    init_ms,init_z,init_ec = enbeding_init_matching(g1, g2)
+    init_ms,init_z,init_ec = enbeding_init_matching(g1, g2,embedding = embedding)
 
     print "refineing matching..."
     #refine mapping
@@ -217,7 +217,7 @@ def main():
         print "usage: ./deepmatching_for_small_scale.py [graph1 file] [graph2 file]"
         return
 
-    ms,z,ec = deepmatching_for_samll_scale(sys.argv[1],sys.argv[2])
+    ms,z,ec = deepmatching_for_samll_scale(sys.argv[1],sys.argv[2],embedding='DeepWalk')
 
     print "matched nodes:"
     print ms

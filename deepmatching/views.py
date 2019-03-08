@@ -33,8 +33,12 @@ def post_graph_matching(request):
     ch = request.POST.get("ch")
     ch = int(ch.encode("utf-8"))
     print "ch = %d"%ch
-    matched_ms,z_score,ec = dm.deepmatching_for_samll_scale(g1,g2,ch) 
-    return render(request,'deepmatching/graph_matching_post.html',{'end': end,'nodes1':nodes1,'edges1':edges1,'nodes2':nodes2,'edges2':edges2,'back':back,"edges3":matched_ms,"z_score":z_score,"ch":ch})
+
+    embedding = request.POST.get("embedding")
+    embedding = str(embedding.encode("utf-8"))
+    print "embedding = %s"%embedding
+    matched_ms,z_score,ec = dm.deepmatching_for_samll_scale(g1,g2,ch,embedding) 
+    return render(request,'deepmatching/graph_matching_post.html',{'end': end,'nodes1':nodes1,'edges1':edges1,'nodes2':nodes2,'edges2':edges2,'back':back,"edges3":matched_ms,"z_score":z_score,"ch":ch,"embedding":embedding})
 
 def post_community_matching(request):
     back = request.META.get('HTTP_REFERER')
@@ -43,16 +47,26 @@ def post_community_matching(request):
     filecontext2 = ""
     for chunk in ret.chunks():
             filecontext1 += chunk
-    nodes1,edges1 = dm.load_graph_from_edges_string(filecontext1)
+    nodes1,edges1,g1 = dm.load_graph_from_edges_string(filecontext1)
     ret = request.FILES.get('filename2')
     for chunk in ret.chunks():
             filecontext2 += chunk
-    nodes2,edges2 = dm.load_graph_from_edges_string(filecontext2)
+    nodes2,edges2,g2 = dm.load_graph_from_edges_string(filecontext2)
     end = len(nodes1)
-    edges3 = [(0,34),(1,25),(3,20)]
-    z_score = request.POST.get("zscore")
+    ch = request.POST.get("ch")
+    ch = int(ch.encode("utf-8"))
+    print "ch = %d"%ch
+
+    embedding = request.POST.get("embedding")
+    embedding = str(embedding.encode("utf-8"))
+    print "embedding = %s"%embedding
+
     comm_limit_down = request.POST.get("comm_limit_down")
+    comm_limit_down = int(comm_limit_down.encode("utf-8"))
     comm_limit_up = request.POST.get("comm_limit_up")
-    print "z_score = ",z_score
-    return render(request,'deepmatching/community_matching_post.html',{'end': end,'nodes1':nodes1,'edges1':edges1,'nodes2':nodes2,'edges2':edges2,'back':back,"edges3":edges3})
-#return HttpResponse("zsocre: " + str(z_score) + "community szie :" + str(comm_limit_down) +"-" +str(comm_limit_up))
+    comm_limit_up = int(comm_limit_up.encode("utf-8"))
+    
+    print "community size: %d-%d"%(comm_limit_down,comm_limit_up)
+
+    matched_ms,z_score,ec = dm.deepmatching_for_samll_scale(g1,g2,ch,embedding) 
+    return render(request,'deepmatching/graph_matching_post.html',{'end': end,'nodes1':nodes1,'edges1':edges1,'nodes2':nodes2,'edges2':edges2,'back':back,"edges3":matched_ms,"z_score":z_score,"ch":ch,"embedding":embedding})
