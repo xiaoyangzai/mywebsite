@@ -30,8 +30,9 @@ def post_graph_matching(request):
             filecontext2 += chunk
     nodes2,edges2,g2 = dm.load_graph_from_edges_string(filecontext2)
     end = len(nodes1)
-    
     ch = request.POST.get("ch")
+    ch = int(ch.encode("utf-8"))
+    print "ch = %d"%ch
     matched_ms,z_score,ec = dm.deepmatching_for_samll_scale(g1,g2,ch) 
     return render(request,'deepmatching/graph_matching_post.html',{'end': end,'nodes1':nodes1,'edges1':edges1,'nodes2':nodes2,'edges2':edges2,'back':back,"edges3":matched_ms,"z_score":z_score,"ch":ch})
 

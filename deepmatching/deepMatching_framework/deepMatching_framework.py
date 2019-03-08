@@ -173,7 +173,7 @@ def enbeding_init_matching(G1, G2,matched_dic = None):
     return matches,z,edge_consistency
 
 def refine_matching(init_matched_ms,G1,G2,ch = 2.0):
-    matches_ms = maximum_consistency_matches(init_matched_ms, G1, G2)
+    matches_ms = maximum_consistency_matches(init_matched_ms, G1, G2,cth=ch)
     edge_consistency = mapping_consistency(matches_ms, G1, G2)
     print "edge consistency:", edge_consistency
     z = mapping_credibility(matches_ms, G1, G2)
@@ -207,6 +207,7 @@ def deepmatching_for_samll_scale(g1,g2,ch=2):
     print "propagation matching..."
     #propagation mapping
     pg_ms,pg_z,pg_ec = propagation_matching(refine_ms,g1,g2)
+    print pg_ms
     
     return pg_ms,pg_z,pg_ec
     
