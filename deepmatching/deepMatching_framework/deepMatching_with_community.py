@@ -77,6 +77,7 @@ def graph_matching_for_lage_scale(g1,g2,upper_limit = 1000,down_limit = 100,z_sc
     sub_seeds,sub_pg_z,sub_pg_ec = dm_framework.deepmatching_for_samll_scale(sub_g1,sub_g2)
     G1_init_mapping_seeds = [item[0] for item in sub_seeds]
     G2_init_mapping_seeds = [item[1] for item in sub_seeds]
+    print"subgraph matched nodes pairs number: %d"%(len(sub_seeds))
 
     #2. community matching
     #2.1 community detection
@@ -90,14 +91,41 @@ def graph_matching_for_lage_scale(g1,g2,upper_limit = 1000,down_limit = 100,z_sc
 
     #2.2 community mapping with Z check.
     print "====== step 1.2.2: community mapping ======"
-    matched_community_with_z_check,global_community_seeds_list,overlap_list_z_level,community_accuracy_rate,matched_count = community_matching(long_G,short_G,long_cmty_list,short_cmty_list,low_threshold = down_limit,upper_threshold = upper_limit)
-    print matched_community_with_z_check
+    matched_community_with_z_check,global_community_seeds_list,overlap_list_z_level,community_accuracy_rate,matched_count,long_cmty_features,short_cmty_features = community_matching(long_G,short_G,long_cmty_list,short_cmty_list,low_threshold = down_limit,upper_threshold = upper_limit)
+
+    print "Community matched nodes pairs number: %d"%(len(global_community_seeds_list)) 
 
     #3. global seeds merge
     print "====== step 2: global seeds merge ======"
+    global_seeds_set = {}   
+    common_seeds_number = 0
+    for item in global_community_seeds_list:
+        global_seeds_set[item[0]] = item[1]
 
+    len_initial_seeds = len(long_initial_seeds)
+    for index in range(len_initial_seeds):
+        if long_initial_seeds[index] in global_seeds_set:
+            if global_seeds_set[long_initial_seeds[index] ] == short_initial_seeds[index]:
+                common_seeds_number += 1
+                continue
+            else:
+                global_seeds_set[long_initial_seeds[index]] = short_initial_seeds[index]
+        else:
+            global_seeds_set[long_initial_seeds[index]] = short_initial_seeds[index]
+
+    global_seeds_list = []
+    real_matched_global_seeds_number = 0
+    for key in global_seeds_set:
+        global_seeds_list.append([key,global_seeds_set[key]])
+        if key == global_seeds_set[key]:
+            real_matched_global_seeds_number+= 1
+    print "Merge global matched nodes pairs number: %d"%(len(global_seeds_list)) 
+    print "Real meached global seeds number: %d"%real_matched_global_seeds_number
     #4. global propagation
     print "====== step 3: global propagation ======"
+    propagation_matched_nodes,propagation_z_score,propagation_ec = dm_framework.propagation_matching(global_seeds_list,long_G,short_G)
+    print"Propagation matched nodes pairs number: %d"%(len(propagation_matched_nodes))
+    return propagation_matched_nodes,matched_community_with_z_check,long_cmty_features,short_cmty_features
 
 def extract_subgraph(G,nodes = 500):
     sub_nodes = []  
@@ -429,8 +457,6 @@ def obtain_cmty_feature_array(G,cmty_list,low_threshold,upper_threshold,feature_
         temp = feature_method(G,cmty,low_threshold,upper_threshold)
         temp = normalize_cmty_feature(temp)
         feature.append(temp)
-        print"community[%d] features vector: "%index,
-        print temp
         index += 1 
     #print "obtain cmty feature array finished"
     return feature
@@ -736,7 +762,7 @@ def community_matching(long_G,short_G,long_cmty_list,short_cmty_list,low_thresho
     if len(matched_communities_with_z_check) > 0:
     	community_matched_accuracy_z_level = float(matched_count_z_level) / len(matched_communities_with_z_check)
     
-    return matched_communities_with_z_check,global_seeds_of_nodes_list,overlap_list_z_level,community_matched_accuracy_z_level,matched_count_z_level
+    return matched_communities_with_z_check,global_seeds_of_nodes_list,overlap_list_z_level,community_matched_accuracy_z_level,matched_count_z_level,long_cmty_features,short_cmty_features
 
 
 def main():

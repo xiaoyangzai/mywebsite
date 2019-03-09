@@ -4,9 +4,34 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>网络匹配</title>
+<link rel="stylesheet" href="{% static 'deepmatching/bootstrap.min.css' %}" type="text/css"/>
 <link rel="stylesheet" href="{% static 'deepmatching/index.css' %}" type="text/css"/>
+<script type="text/javascript" src="{% static 'deepmatching/jquery-3.3.1.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'deepmatching/vis.js' %}"></script>
+<link href="{% static 'deepmatching/vis-network.min.css' %}" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="{% static 'deepmatching/bootstrap.min.js' %}"></script>
 </head>
 <script type="text/javascript">
+var timer;
+function show_progessbar()
+{
+	timer = setInterval("get_process()",200);
+}
+function get_process()
+{
+	$.getJSON("{% url 'get_graph_matching_process' %}",function(res){
+		console.log("recv: "+res + "%");
+		$('#prog_in').css("width",res + "%").text(res + "%");
+		$('#prog_in').width(res + "%");
+		if(res >= 100)
+		{
+			clearInterval(timer);
+			 $('#prog_out').attr("class", "progress progress-bar-success");
+		}
+	}
+	);
+}
+
 function checkInput(){
 	if(document.getElementById("graph1").value =="")
 	{
@@ -57,8 +82,13 @@ function checkInput(){
 				<td></td>
 			</tr>
 		</table>
-		<input type="submit" class="btn" value="开始匹配"/>
+		<input type="submit" class="btn" value="开始匹配" onclick="show_progessbar()"/>
 		</form>
+		<br>
+		<div id="prog_out" class="progress progress-striped active">
+    		<div id="prog_in" class="progress-bar" role="progressbar" aria-valuenow="" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
+    		</div>
+		</div>
 	</div>
 </div>
 </body>
