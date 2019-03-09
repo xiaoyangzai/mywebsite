@@ -153,10 +153,8 @@ def mapping_credibility(matches, G1, G2):
 
 
 def enbeding_init_matching(G1, G2,matched_dic = None,embedding='DeepWalk'):
-    print "initilizating matching....."
     count = 0
     matches = dm.bipartite_matching(G1, G2,dimensions=100,embedding=embedding)
-    print"total matched nodes: %d" % len(matches)
     if matched_dic == None: 
         for match in matches:
             if match[0] == match[1]:
@@ -167,7 +165,6 @@ def enbeding_init_matching(G1, G2,matched_dic = None,embedding='DeepWalk'):
                 continue
             if matched_dic[match[0]] == match[1]:
                 count += 1
-    print "real bipartmatch: %d" % count
     z = mapping_credibility(matches, G1, G2)
     edge_consistency = mapping_consistency(matches, G1, G2)
     return matches,z,edge_consistency
@@ -175,7 +172,7 @@ def enbeding_init_matching(G1, G2,matched_dic = None,embedding='DeepWalk'):
 def refine_matching(init_matched_ms,G1,G2,ch = 2.0):
     matches_ms = maximum_consistency_matches(init_matched_ms, G1, G2,cth=ch)
     edge_consistency = mapping_consistency(matches_ms, G1, G2)
-    print "edge consistency:", edge_consistency
+    #print "edge consistency:", edge_consistency
     z = mapping_credibility(matches_ms, G1, G2)
     #print "initial seeds cre: %f"%z
     count = 0
@@ -196,19 +193,17 @@ def propagation_matching(matched_ms,G1,G2):
 def deepmatching_for_samll_scale(g1,g2,ch=2,embedding = 'DeepWalk'):
     #g1 = load_graph_from_edges_file(g1)
     #g2 = load_graph_from_edges_file(g2)
-    print "initilizating matching..."
+    print "===== DeepMatching: 1. initilizating matching ====="
     #initilzation mapping
     init_ms,init_z,init_ec = enbeding_init_matching(g1, g2,embedding = embedding)
 
-    print "refineing matching..."
+    print "===== DeepMatching: 2. Refineing matching ====="
     #refine mapping
     refine_ms,refine_z,refine_ec,refine_accuracy = refine_matching(init_ms,g1,g2,ch=ch)
 
-    print "propagation matching..."
+    print "===== DeepMatching: 3. Propagation matching ====="
     #propagation mapping
     pg_ms,pg_z,pg_ec = propagation_matching(refine_ms,g1,g2)
-    print pg_ms
-    
     return pg_ms,pg_z,pg_ec
     
 

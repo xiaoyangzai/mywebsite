@@ -42,7 +42,7 @@ def nodes_embedding(G, p=1, q=1, dimensions=128, embedding='DeepWalk'):
             model = learn_nodevec(G, dimensions=dimensions, argp=p, argq=q, num_walks=100)
         time_end = datetime.datetime.now()
         time = (time_end - time_start).seconds
-        print "Embedding time: " + str(time)
+        #print "Embedding time: " + str(time)
         nodes = [word for word, vcab in model.wv.vocab.iteritems()]
         inds = [vcab.index for word, vcab in model.wv.vocab.iteritems()]
         X = model.wv.syn0[inds]
@@ -65,7 +65,7 @@ def bipartite_matching(G1, G2, p=1, q=1, dimensions=128, embedding='DeepWalk'):
             matches.append((int(node1[p1]), int(node2[p2]), 1 - values_dict[(p1,p2)]))
     time_end_bi = datetime.datetime.now()
     time = (time_end_bi - time_start_bi).seconds
-    print "Bipartite_matching time: " + str(time)
+    #print "Bipartite_matching time: " + str(time)
     return matches
 
 def map_prob_maxtrix(G1, G2, p=1, q=1, dimensions=128, embedding='DeepWalk'):
@@ -79,7 +79,7 @@ def map_prob_maxtrix(G1, G2, p=1, q=1, dimensions=128, embedding='DeepWalk'):
     P = reg.P
     time_end_cpd = datetime.datetime.now()
     time = (time_end_cpd - time_start_cpd).seconds
-    print "CPD time: " + str(time)
+    #print "CPD time: " + str(time)
     return (nodes1, nodes2, P)
 
 
