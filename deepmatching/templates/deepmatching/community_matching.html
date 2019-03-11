@@ -3,10 +3,43 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>网络匹配</title>
+<title>社区匹配</title>
+<link rel="stylesheet" href="{% static 'deepmatching/bootstrap.min.css' %}" type="text/css"/>
 <link rel="stylesheet" href="{% static 'deepmatching/index.css' %}" type="text/css"/>
+<script type="text/javascript" src="{% static 'deepmatching/jquery-3.3.1.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'deepmatching/vis.js' %}"></script>
+<link href="{% static 'deepmatching/vis-network.min.css' %}" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="{% static 'deepmatching/bootstrap.min.js' %}"></script>
 </head>
 <script type="text/javascript">
+
+var timer;
+function show_progessbar()
+{
+	if(checkInput() == true)
+	{
+		document.getElementById("sbmt").disabled=true;
+	  	var showDiv = document.getElementById('prog_bar');
+	  	showDiv.style.display = 'block';
+		timer = setInterval("get_process()",100);
+	}
+}
+
+function get_process()
+{
+	$.getJSON("{% url 'get_community_matching_process' %}",function(res){
+		console.log("recv: "+res + "%");
+		$('#prog_in').css("width",res + "%").text("正在匹配..." + res + "%");
+		//$('#prog_in').width(res + "%").text("正在匹配..."+res + "%");
+		if(res >= 100)
+		{
+			clearInterval(timer);
+			 $('#prog_out').attr("class", "progress progress-bar-success");
+		}
+	}
+	);
+}
+
 function checkInput(){
 	if(document.getElementById("graph1").value =="")
 	{
@@ -36,6 +69,7 @@ function checkInput(){
 <div class="main">
 	<div class="top">DeepMatching</div>
 	<div class="left">
+		<a href="{% url 'index'%}">DeepMatching简介</a>
 		<a href="{% url 'graph_matching' %}" >网络匹配</a>
 		<a href="{% url 'community_matching' %}">社区匹配</a>
 	</div>
@@ -58,13 +92,6 @@ function checkInput(){
 						<option value =5>5</option>
 					</select>
 				</td>
-				<td style="text-align: right;">Embedding方法</td>
-				<td>
-					<select name="embedding">
-						<option value ="DeepWalk">DeepWalk</option>
-						<option value ="Node2Vec">Node2Vec</option>
-					</select>
-				</td>
 				<td></td>
 			</tr>
 			<tr>
@@ -80,8 +107,15 @@ function checkInput(){
 				<td></td>
 			</tr>
 		</table>
-		<input type="submit" class="btn" value="开始匹配"/>
+		<input id="sbmt" type="submit" style="display:block; width:120px; height: 50px; text-algin:center; margin:200px auto 0 auto;background: #c8e5fe; color:#131212; border-radius: 25px;" value="开始匹配" onclick="show_progessbar()"/>
 		</form>
+		<br>
+		<div id="prog_bar" class="progress" style="display:none;">
+			<div id="prog_out" class="progress progress-striped active" >
+    			<div id="prog_in" class="progress-bar" role="progressbar" aria-valuenow="" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
+    			</div>
+			</div>
+		</div>
 	</div>
 </div>
 </body>

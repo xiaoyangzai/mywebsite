@@ -38,7 +38,7 @@ def load_graph_from_edges_file(edges_file,comment = '#',delimiter=' '):
     return G 
 
 
-def maximum_consistency_matches(matches, G1, G2, nodenum_limit=7, cth = 2.0):
+def maximum_consistency_matches(matches, G1, G2, nodenum_limit=3, cth = 2.0):
     '''
     Extract a sublist of matches in order to maximize the consistency between the two subgraphs. The two subgraphs 
     are extracted from the two matching graphs according to the sublist of matches. The consistency between two 
@@ -191,8 +191,6 @@ def propagation_matching(matched_ms,G1,G2):
     return refine_match_nodes,pz,edge_consistency
 
 def deepmatching_for_samll_scale(g1,g2,ch=2,embedding = 'DeepWalk'):
-    #g1 = load_graph_from_edges_file(g1)
-    #g2 = load_graph_from_edges_file(g2)
     print "===== DeepMatching: 1. initilizating matching ====="
     #initilzation mapping
     init_ms,init_z,init_ec = enbeding_init_matching(g1, g2,embedding = embedding)
@@ -212,7 +210,9 @@ def main():
         print "usage: ./deepmatching_for_small_scale.py [graph1 file] [graph2 file]"
         return
 
-    ms,z,ec = deepmatching_for_samll_scale(sys.argv[1],sys.argv[2],embedding='DeepWalk')
+    g1 = load_graph_from_edges_file(sys.argv[1])
+    g2 = load_graph_from_edges_file(sys.argv[2])
+    ms,z,ec = deepmatching_for_samll_scale(g1,g2,embedding='node2vec')
 
     print "matched nodes:"
     print ms

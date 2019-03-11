@@ -64,6 +64,70 @@ def community_best_partition_with_limit(G,limit_nodes = 500):
 	sys.stdout.flush()
 	return finished_list
 
+def obtain_credible_matched_community(g1,g2,upper_limit = 1000,down_limit = 100,z_score = 2.0,embedding='DeepWalk',cth = 2):
+    print"community size scale: [%d - %d]"%(down_limit,upper_limit)
+    print"Z check threshold: %.2f"%(z_score)
+    print"consistent edges threshold: %d"%(cth)
+    print"Embedding method: %s"%(embedding)
+
+    #1. subgraph matching 
+    print "====== step 1: subgraph matching ======" 
+    print "====== step 1.1: max connected subgraph matching ======"
+    sub_g1 = extract_subgraph(g1)
+    sub_g2 = extract_subgraph(g2)
+    sub_seeds,sub_pg_z,sub_pg_ec = dm_framework.deepmatching_for_samll_scale(sub_g1,sub_g2)
+    G1_init_mapping_seeds = [item[0] for item in sub_seeds]
+    G2_init_mapping_seeds = [item[1] for item in sub_seeds]
+    print"subgraph matched nodes pairs number: %d"%(len(sub_seeds))
+
+    #2. community matching
+    #2.1 community detection
+    print "====== step 1.2: community matching ======" 
+    print "====== step 1.2.1: community detection ======"
+    G1_community_list = obtain_community_detection_in_graph(g1,down_limit,upper_limit)
+    G2_community_list = obtain_community_detection_in_graph(g2,down_limit,upper_limit)
+
+    long_cmty_list,long_G,long_initial_seeds = (G1_community_list,g1,G1_init_mapping_seeds) if len(G1_community_list) >= len(G2_community_list) else (G2_community_list,g2,G2_init_mapping_seeds)
+    short_cmty_list,short_G,short_initial_seeds = (G1_community_list,g1,G1_init_mapping_seeds) if len(G1_community_list) < len(G2_community_list) else (G2_community_list,g2,G2_init_mapping_seeds)
+
+    #2.2 community mapping with Z check.
+    print "====== step 1.2.2: community mapping ======"
+    matched_community_with_z_check,global_community_seeds_list,overlap_list_z_level,community_accuracy_rate,matched_count,long_cmty_features,short_cmty_features = community_matching(long_G,short_G,long_cmty_list,short_cmty_list,low_threshold = down_limit,upper_threshold = upper_limit)
+    print "Community matched nodes pairs number: %d"%(len(global_community_seeds_list)) 
+
+    #3. construct the data for HTML
+    number_nodes_of_long_graph= len(long_G.nodes())
+    number_of_credible_matched_communities = len(matched_community_with_z_check)
+
+    long_cmty_indexs = [i for i in range(len(long_cmty_list))]
+    short_cmty_indexs = [i for i in range(len(short_cmty_list))]
+    nodes_of_matched_community = []
+    for item in matched_community_with_z_check:
+        long_cmty_indexs.pop(item[0])
+        short_cmty_indexs.pop(item[1])
+        long_nodes_degree = [(i,long_G.degree(i)) for i in long_cmty_list[item[0]]]
+        short_nodes_degree = [(i,short_G.degree(i)) for i in short_cmty_list[item[1]]]
+        tmp = [long_nodes_degree,short_nodes_degree]
+        nodes_of_matched_community.append(tmp)
+
+    nodes_of_unmatched_community = [] 
+    long_unmatched_cmty = []
+    for index in long_cmty_indexs:
+        long_unmatched_cmty.append(long_cmty_list[index])
+    short_unmatched_cmty = []
+    for index in short_cmty_indexs:
+        short_unmatched_cmty.append(short_cmty_list[index])
+    nodes_of_unmatched_community.append(long_unmatched_cmty)
+    nodes_of_unmatched_community.append(short_unmatched_cmty)
+    print "========================================"
+    print number_nodes_of_long_graph
+    print number_of_credible_matched_communities
+    print nodes_of_matched_community
+    print nodes_of_unmatched_community
+
+    return number_nodes_of_long_graph,number_of_credible_matched_communities,nodes_of_matched_community,nodes_of_unmatched_community 
+
+
 def graph_matching_for_lage_scale(g1,g2,upper_limit = 1000,down_limit = 100,z_score = 2.0,embedding='DeepWalk',cth = 2):
     print"community size scale: [%d - %d]"%(down_limit,upper_limit)
     print"Z check threshold: %.2f"%(z_score)
@@ -125,6 +189,12 @@ def graph_matching_for_lage_scale(g1,g2,upper_limit = 1000,down_limit = 100,z_sc
     print "====== step 3: global propagation ======"
     propagation_matched_nodes,propagation_z_score,propagation_ec = dm_framework.propagation_matching(global_seeds_list,long_G,short_G)
     print"Propagation matched nodes pairs number: %d"%(len(propagation_matched_nodes))
+
+    print "========================================"
+    print matched_community_with_z_check
+    print long_cmty_list
+    print short_cmty_list 
+
     return propagation_matched_nodes,matched_community_with_z_check,long_cmty_features,short_cmty_features
 
 def extract_subgraph(G,nodes = 500):
@@ -452,14 +522,16 @@ def obtain_cmty_feature_array(G,cmty_list,low_threshold,upper_threshold,feature_
     '''		
     #print "obtain cmty feature array"
     feature = [] 
+    feature_unnormalize = [] 
     index = 0 
     for cmty in cmty_list:
         temp = feature_method(G,cmty,low_threshold,upper_threshold)
+        feature_unnormalize.append(temp) 
         temp = normalize_cmty_feature(temp)
         feature.append(temp)
         index += 1 
     #print "obtain cmty feature array finished"
-    return feature
+    return feature,feature_unnormalize
 
 def obtain_score_between_features(long_features_list,short_features_list,method = euclidean_metric):
 	'''
@@ -718,8 +790,8 @@ def community_matching(long_G,short_G,long_cmty_list,short_cmty_list,low_thresho
     '''
     #1. Extract the features of community based on their attributes.
     print"***** Community mapping: 1. extract features of community. *****"
-    long_cmty_features = obtain_cmty_feature_array(long_G,long_cmty_list,low_threshold,upper_threshold)
-    short_cmty_features = obtain_cmty_feature_array(short_G,short_cmty_list,low_threshold,upper_threshold)
+    long_cmty_features,long_cmty_features_unnormalize = obtain_cmty_feature_array(long_G,long_cmty_list,low_threshold,upper_threshold)
+    short_cmty_features,short_cmty_features_unnormalize = obtain_cmty_feature_array(short_G,short_cmty_list,low_threshold,upper_threshold)
 
     #2. Calculate the distance among the communities as the similarity.
     print"***** Community mapping: 2. Calculate the similarity between communities. *****"
@@ -761,14 +833,15 @@ def community_matching(long_G,short_G,long_cmty_list,short_cmty_list,low_thresho
     community_matched_accuracy_z_level = 0
     if len(matched_communities_with_z_check) > 0:
     	community_matched_accuracy_z_level = float(matched_count_z_level) / len(matched_communities_with_z_check)
+
     
-    return matched_communities_with_z_check,global_seeds_of_nodes_list,overlap_list_z_level,community_matched_accuracy_z_level,matched_count_z_level,long_cmty_features,short_cmty_features
+    return matched_communities_with_z_check,global_seeds_of_nodes_list,overlap_list_z_level,community_matched_accuracy_z_level,matched_count_z_level,long_cmty_features_unnormalize,short_cmty_features_unnormalize
 
 
 def main():
     g1 = dm_framework.load_graph_from_edges_file(sys.argv[1])  
     g2 = dm_framework.load_graph_from_edges_file(sys.argv[2])  
-    graph_matching_for_lage_scale(g1,g2,upper_limit = 1000,down_limit= 100)
+    obtain_credible_matched_community(g1,g2,upper_limit = 1000,down_limit= 3)
 
 if __name__ == "__main__":
     main()

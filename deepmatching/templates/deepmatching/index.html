@@ -3,14 +3,20 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>1</title>
+<title>首页</title>
+<script type="text/javascript" src="{% static 'deepmatching/jquery-3.3.1.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'deepmatching/vis.js' %}"></script>
+<link href="{% static 'deepmatching/vis-network.min.css' %}" rel="stylesheet" type="text/css"/>
+<link rel="stylesheet" href="{% static 'deepmatching/bootstrap.min.css' %}" type="text/css"/>
 <link rel="stylesheet" href="{% static 'deepmatching/index.css' %}">
+<script type="text/javascript" src="{% static 'deepmatching/bootstrap.min.js' %}"></script>
 </head>
 
 <body>
 <div class="main">
 	<div class="top">DeepMatching</div>
 	<div class="left">
+		<a href="{% url 'index'%}">DeepMatching简介</a>
 		<a href="{% url 'graph_matching' %}">网络匹配</a>
 		<a href="{% url 'community_matching'%}">社区匹配</a>
 	</div>

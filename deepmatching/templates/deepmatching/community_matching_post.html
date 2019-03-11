@@ -3,47 +3,31 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>网络匹配</title>
+<title>社区匹配结果</title>
 <link rel="stylesheet" href="{% static 'deepmatching/index.css' %}" type="text/css"/>
 
 <script type="text/javascript" src="{% static 'deepmatching/vis.js' %}"></script>
-   <link href="{% static 'deepmatching/vis-network.min.css' %}" rel="stylesheet" type="text/css"/>
+<link href="{% static 'deepmatching/vis-network.min.css' %}" rel="stylesheet" type="text/css"/>
 
 <script type="text/javascript">
-	function overShow(params) {
-	  var showDiv = document.getElementById('showDiv');
-	  showDiv.style.left = params.event.clientX - 20 +"px";
-	  showDiv.style.top = params.event.clientY - 30+ "px";
-	  showDiv.style.display = 'block';
-	  var text = 'Node: '+nodes[params.node -1]["label"];
-	  showDiv.innerHTML = text;
-	 }
-	 
-	 function outHide() {
-	  var showDiv = document.getElementById('showDiv');
-	  showDiv.style.display = 'none';
-	  showDiv.innerHTML = '';
-	 }
-
 			var nodes = [
-			{% for node in nodes1 %}
-				{id:{{node.0}},size:{{node.1}}/{{end}}*270,label:"{{node.0}}",group:"网络1",font:{size: 150} },
+			{% for node in nodes_of_matched_community%}
+				{id:{{node.0}},label:"{{node.1}}",title: "{{node.2}}",group: {{node.3}},shape: "{{node.4}}",size: {{node.6}},font:{{node.5}}},
 			{% endfor %}
-			{% for node in nodes2 %}
-				{id:{{node.0}}+{{end}},size:{{node.1}}/{{end}}*250,label:"{{node.0}}",group:"网络2",font:{size: 150} },
+
+			{% for node in nodes_of_unmatched_community%}
+				{id:{{node.0}},label:"{{node.1}}",title: "{{node.2}}",group: {{node.3}},shape: "{{node.4}}",size: {{node.6}},font:{{node.5}}},
 			{% endfor %}
 			];
+
             // create some edges
 			var edges = [
-			{% for e in edges1 %}
-				{from:{{e.0}},to:{{e.1}},width:10},
-			{% endfor %}
-			{% for e in edges2 %}
-				{from:{{e.0}}+{{end}},to:{{e.1}}+{{end}},width:10},
+			{% for e in all_edges_final%}
+				{from:{{e.0}},to:{{e.1}}},
 			{% endfor %}
 
-			{% for e in edges3 %}
-				{from:{{e.0}},to:{{e.1}}+{{end}},color:{color:"red",highlight:"red"},width:30},
+			{% for e in edges_between_matched_community%}
+				{from:{{e.0}},to:{{e.1}},color:{color:"red",highlight:"red"},width:30},
 			{% endfor %}
 			];
 
@@ -57,8 +41,13 @@
       	var y = -mynetwork.clientHeight/ 2 + 5450;
 		console.log("x = "+x+"\ty = "+ y);
      	var step = 1050;
-      	nodes.push({id: 1000, x: x, y: y, label: '网络1', group: '网络1', fixed: true, size: 200,physics:false,font:{size: 200} });
-      	nodes.push({id: 1001, x: x+step, y: y, label: '网络2', group: '网络2', size: 200,fixed: true,  physics:false,font:{size: 200} });
+		{%if graph_order == 1%}
+      		nodes.push({id: {{legend1}}, x: x, y: y, label: '网络1', fixed: true, size: 200,physics:false,font:{size: 200},shape:"dot" });
+      		nodes.push({id: {{legend2}}, x: x+step, y: y, label: '网络2', size: 200,fixed: true,  physics:false,font:{size: 200},shape:"diamond" });
+		{% else %}
+      		nodes.push({id: {{legend1}}, x: x, y: y, label: '网络1', fixed: true, size: 200,physics:false,font:{size: 200},shape:"diamond" });
+      		nodes.push({id: {{legend2}}, x: x+step, y: y, label: '网络2', size: 200,fixed: true,  physics:false,font:{size: 200},shape:"dot" });
+		{%endif%}
 
             // create a network
             var container = document.getElementById('mynetwork');
@@ -68,8 +57,12 @@
             };
             var options = {
 				nodes:{
-				shadow: true,
-				borderWidth: 2
+						shadow: true,
+						borderWidth: 1,
+						scaling:{
+							min:20,
+							max:50
+						},
 					  },
                 physics: {
 					solver: "forceAtlas2Based",
@@ -85,16 +78,6 @@
 				edges:{
 						smooth: false
 					  },
-				groups:{
-					'网络1':{
-						shape: 'dot',
-						color: 'blue'
-					  },
-					'网络2':{
-						shape: 'diamond',
-						color: '#109618'
-					  }
-				},
 				interaction: {
 						hover: true
 							 }
@@ -119,15 +102,14 @@
 <div class="main">
 	<div class="top">DeepMatching</div>
 	<div class="left">
+		<a href="{% url 'index'%}">DeepMatching简介</a>
 		<a href="{% url 'graph_matching' %}" >网络匹配</a>
 		<a href="{% url 'community_matching' %}">社区匹配</a>
 	</div>
 
 	<div class="right">
 		<div id="mynetwork" class="mynetwork"></div>
-		<div id="showDiv" style="position: absolute; background-color:white; border: 1px solid black;"></div>
 		<div id="back" style="position: relative; text-align: center;">
-			<br><a href="/deepmatching" >返回首页</a>
 		</div>
 	</div>
 </div>
