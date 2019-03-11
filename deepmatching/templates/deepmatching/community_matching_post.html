@@ -30,7 +30,10 @@
 				{from:{{e.0}},to:{{e.1}},color:{color:"red",highlight:"red"},width:30},
 			{% endfor %}
 			];
+		var index = 0;
 
+		for(index = 0;index < nodes.length;index++)
+			nodes[index]['title'] = nodes[index]['title'].replace(/\#/g,"<br>");
 
         function draw() {
             // create some nodes

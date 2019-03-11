@@ -15,13 +15,12 @@
 var timer;
 function show_progessbar()
 {
-	if(checkInput() == true)
-	{
 		document.getElementById("sbmt").disabled=true;
 	  	var showDiv = document.getElementById('prog_bar');
 	  	showDiv.style.display = 'block';
 		timer = setInterval("get_process()",100);
-	}
+		document.getElementById('g_form').submit();
+		return true;
 }
 function get_process()
 {
@@ -61,7 +60,7 @@ function checkInput(){
 		<a href="{% url 'community_matching' %}">社区匹配</a>
 	</div>
 	<div class="right">
-		<form action="post_graph_matching/" ENCTYPE="multipart/form-data" method="post" onsubmit="return checkInput();">
+		<form id="g_form" action="post_graph_matching/" ENCTYPE="multipart/form-data" method="post" onsubmit="return checkInput();">
 		<table>
 			<tr>
 				<td style="text-align: right;">网络文件1</td>
@@ -82,7 +81,7 @@ function checkInput(){
 				<td></td>
 			</tr>
 		</table>
-		<input id="sbmt" type="submit" style="display:block; width:120px; height: 50px; text-algin:center; margin:200px auto 0 auto;background: #c8e5fe; color:#131212; border-radius: 25px;" value="开始匹配" onclick="show_progessbar()"/>
+		<input id="sbmt" type="submit" style="display:block; width:120px; height: 50px; text-algin:center; margin:200px auto 0 auto;background: #c8e5fe; color:#131212; border-radius: 25px;" value="开始匹配" onclick="return show_progessbar();"/>
 		</form>
 		<br>
 		<div id="prog_bar" class="progress" style="display:none;">

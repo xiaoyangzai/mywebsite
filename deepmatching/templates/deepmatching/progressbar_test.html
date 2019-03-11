@@ -1,0 +1,53 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>网络匹配</title>
+<link rel="stylesheet" href="./bootstrap.min.css" type="text/css"/>
+<link rel="stylesheet" href="./index.css" type="text/css"/>
+<script type="text/javascript" src="./jquery-3.3.1.min.js"></script>
+<script type="text/javascript" src="./bootstrap.min.js"></script>
+</head>
+<script type="text/javascript">
+var step;
+var timer;
+function test_click()
+{
+	step = 0;
+	timer = setInterval("clock()",1000); 
+}
+function clock()
+{
+	step += 10;
+	console.log("step: "+step);
+	if(step <= 100)
+		$('#prog_in').css("width",step + "%").text(step + "%");
+	else
+	{
+		clearInterval(timer);
+		$('#prog_out').attr("class","progress progress-bar-success");
+	}
+}
+
+</script>
+<body>
+<div class="main">
+	<div class="top">DeepMatching</div>
+	<div class="left">
+		<a href="#" >网络匹配</a>
+		<a href="#">社区匹配</a>
+	</div>
+
+	<div class="right">
+			<div id="prog_out" class="progress progress-striped active">
+    			<div id="prog_in" class="progress-bar" role="progressbar" aria-valuenow="0%" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
+				<span id="proglabel">正在匹配，请稍后....</span>
+    			</div>
+			</div>
+		<br>
+		<button  onclick="test_click()">提交</button>	
+	</div>
+
+</div>
+</body>
+</html>

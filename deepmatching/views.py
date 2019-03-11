@@ -144,11 +144,11 @@ def post_community_matching(request):
         long_nodes_degree = []
         short_nodes_degree = []
         if long_G == g1:
-            long_nodes_degree = [[i,"%d"%i,"Node id: %d<br>Degree: %d<br> Community id: %d"%(i,long_G.degree(i),tmp_index),tmp_index,"dot","{size: 150}",long_G.degree(i) * 20] for i in long_cmty_list[item[0]]]
-            short_nodes_degree = [[i+number_nodes_of_long_graph,"%d"%(i),"Node id: %d<br>Degree: %d<br> Community id: %d"%(i,short_G.degree(i),tmp_index),tmp_index,"diamond","{size: 150}",short_G.degree(i) * 20] for i in short_cmty_list[item[1]]]
+            long_nodes_degree = [[i,"%d"%i,"Node id: %d#Degree: %d# Community id: %d"%(i,long_G.degree(i),tmp_index),tmp_index,"dot","{size: 150}",long_G.degree(i) * 20] for i in long_cmty_list[item[0]]]
+            short_nodes_degree = [[i+number_nodes_of_long_graph,"%d"%(i),"Node id: %d#Degree: %d# Community id: %d"%(i,short_G.degree(i),tmp_index),tmp_index,"diamond","{size: 150}",short_G.degree(i) * 20] for i in short_cmty_list[item[1]]]
         else:
-            long_nodes_degree = [[i + number_nodes_of_short_graph,"%d"%i,"Node id: %d<br>Degree: %d<br> Community id: %d"%(i,long_G.degree(i),tmp_index),tmp_index,"diamond","{size: 150}",long_G.degree(i)*20] for i in long_cmty_list[item[0]]]
-            short_nodes_degree = [[i,"%d"%i,"Node id: %d<br>Degree: %d<br> Community id: %d"%(i,short_G.degree(i),tmp_index),tmp_index,"dot","{size: 150}",short_G.degree(i) * 20] for i in short_cmty_list[item[1]]]
+            long_nodes_degree = [[i + number_nodes_of_short_graph,"%d"%i,"Node id: %d#Degree: %d# Community id: %d"%(i,long_G.degree(i),tmp_index),tmp_index,"diamond","{size: 150}",long_G.degree(i)*20] for i in long_cmty_list[item[0]]]
+            short_nodes_degree = [[i,"%d"%i,"Node id: %d#Degree: %d# Community id: %d"%(i,short_G.degree(i),tmp_index),tmp_index,"dot","{size: 150}",short_G.degree(i) * 20] for i in short_cmty_list[item[1]]]
 
         long_nodes_degree.sort(key=lambda x:x[-1])
         long_nodes_degree.reverse()
@@ -160,11 +160,11 @@ def post_community_matching(request):
         edges_between_matched_community.append([long_nodes_degree[0][0],short_nodes_degree[0][0]])
 
         if long_G == g1:
-            long_nodes_degree[0][2] = "Node id: %d<br>Degree: %d<br> Community id:%d<br> feature1: %.2f<br>feature2: %.2f"%(long_nodes_degree[0][0],long_nodes_degree[0][-1]/20,long_nodes_degree[0][3],long_cmty_features[item[0]][0],long_cmty_features[item[0]][1]) 
-            short_nodes_degree[0][2] = "Node id: %d<br>Degree: %d<br> Community id:%d<br> feature1: %.2f<br>feature2: %.2f"%(short_nodes_degree[0][0] - number_nodes_of_long_graph,short_nodes_degree[0][-1]/20,short_nodes_degree[0][3],short_cmty_features[item[1]][0],short_cmty_features[item[1]][1]) 
+            long_nodes_degree[0][2] = "Node id: %d#Degree: %d# Community id:%d# feature1: %.2f#feature2: %.2f"%(long_nodes_degree[0][0],long_nodes_degree[0][-1]/20,long_nodes_degree[0][3],long_cmty_features[item[0]][0],long_cmty_features[item[0]][1]) 
+            short_nodes_degree[0][2] = "Node id: %d#Degree: %d# Community id:%d# feature1: %.2f#feature2: %.2f"%(short_nodes_degree[0][0] - number_nodes_of_long_graph,short_nodes_degree[0][-1]/20,short_nodes_degree[0][3],short_cmty_features[item[1]][0],short_cmty_features[item[1]][1]) 
         else:
-            long_nodes_degree[0][2] = "Node id: %d<br>Degree: %d<br> Community id:%d<br> feature1: %.2f<br>feature2: %.2f"%(long_nodes_degree[0][0] - number_nodes_of_short_graph,long_nodes_degree[0][-1]/20,long_nodes_degree[0][3],long_cmty_features[item[0]][0],long_cmty_features[item[0]][1]) 
-            short_nodes_degree[0][2] = "Node id: %d<br>Degree: %d<br> Community id:%d<br> feature1: %.2f<br>feature2: %.2f"%(short_nodes_degree[0][0],short_nodes_degree[0][-1]/20,short_nodes_degree[0][3],short_cmty_features[item[1]][0],short_cmty_features[item[1]][1]) 
+            long_nodes_degree[0][2] = "Node id: %d#Degree: %d# Community id:%d# feature1: %.2f#feature2: %.2f"%(long_nodes_degree[0][0] - number_nodes_of_short_graph,long_nodes_degree[0][-1]/20,long_nodes_degree[0][3],long_cmty_features[item[0]][0],long_cmty_features[item[0]][1]) 
+            short_nodes_degree[0][2] = "Node id: %d#Degree: %d#Community id:%d#feature1: %.2f#feature2: %.2f"%(short_nodes_degree[0][0],short_nodes_degree[0][-1]/20,short_nodes_degree[0][3],short_cmty_features[item[1]][0],short_cmty_features[item[1]][1]) 
         #set the title of the node whose degree is the greatest in community.
         nodes_of_matched_community.extend(long_nodes_degree)
         nodes_of_matched_community.extend(short_nodes_degree)
@@ -179,17 +179,17 @@ def post_community_matching(request):
     for item in long_unmatched_cmty_index:
         long_nodes_degree = []
         if long_G == g1:
-            long_nodes_degree = [[i,"%d"%i,"Node id: %d <br>Degree: %d<br> Community id: %d"%(i,long_G.degree(i),long_tmp_index),long_tmp_index,"dot","{size: 150}",long_G.degree(i) * 20] for i in long_cmty_list[item]]
+            long_nodes_degree = [[i,"%d"%i,"Node id: %d #Degree: %d# Community id: %d"%(i,long_G.degree(i),long_tmp_index),long_tmp_index,"dot","{size: 150}",long_G.degree(i) * 20] for i in long_cmty_list[item]]
         else:
-            long_nodes_degree = [[i + number_nodes_of_short_graph,"%d"%i,"Node id: %d <br> Degree: %d <br> Community id: %d"%(i,long_G.degree(i),long_tmp_index),long_tmp_index + number_community_of_short_graph,"diamond","{size: 150}",long_G.degree(i)*20] for i in long_cmty_list[item]]
+            long_nodes_degree = [[i + number_nodes_of_short_graph,"%d"%i,"Node id: %d # Degree: %d # Community id: %d"%(i,long_G.degree(i),long_tmp_index),long_tmp_index + number_community_of_short_graph,"diamond","{size: 150}",long_G.degree(i)*20] for i in long_cmty_list[item]]
 
-        long_nodes_degree.sort(key=lambda x:x[1])
+        long_nodes_degree.sort(key=lambda x:x[-1])
         long_nodes_degree.reverse()
 
         if long_G == g1:
-            long_nodes_degree[0][2] = "Node id: %d<br>Degree: %d <br> Community id:%d<br> feature1: %.2f <br>feature2: %.2f"%(long_nodes_degree[0][0],long_nodes_degree[0][-1]/20,long_nodes_degree[0][3],long_cmty_features[item][0],long_cmty_features[item][1]) 
+            long_nodes_degree[0][2] = "Node id: %d#Degree: %d # Community id:%d#feature1: %.2f #feature2: %.2f"%(long_nodes_degree[0][0],long_nodes_degree[0][-1]/20,long_nodes_degree[0][3],long_cmty_features[item][0],long_cmty_features[item][1]) 
         else:
-            long_nodes_degree[0][2] = "Node id: %d <br>Degree: %d<br> Community id:%d<br> feature1: %.2f<br>feature2: %.2f"%(long_nodes_degree[0][0] - number_nodes_of_short_graph,long_nodes_degree[0][-1]/20,long_nodes_degree[0][3],long_cmty_features[item][0],long_cmty_features[item][1]) 
+            long_nodes_degree[0][2] = "Node id: %d #Degree: %d# Community id:%d# feature1: %.2f#feature2: %.2f"%(long_nodes_degree[0][0] - number_nodes_of_short_graph,long_nodes_degree[0][-1]/20,long_nodes_degree[0][3],long_cmty_features[item][0],long_cmty_features[item][1]) 
 
         nodes_of_unmatched_community.extend(long_nodes_degree)
         long_tmp_index += 1
@@ -199,21 +199,20 @@ def post_community_matching(request):
     for item in short_unmatched_cmty_index:
         short_nodes_degree = []
         if long_G == g1:
-            short_nodes_degree = [[i+number_nodes_of_long_graph,"%d"%(i),"Node id: %d'<br>'Degree: %d'<br>' Community id: %d"%(i,short_G.degree(i),short_tmp_index),short_tmp_index + number_community_of_long_graph,"diamond","{size: 150}",short_G.degree(i) * 20] for i in short_cmty_list[item]]
+            short_nodes_degree = [[i+number_nodes_of_long_graph,"%d"%(i),"Node id: %d#Degree: %d# Community id: %d"%(i,short_G.degree(i),short_tmp_index),short_tmp_index + number_community_of_long_graph,"diamond","{size: 150}",short_G.degree(i) * 20] for i in short_cmty_list[item]]
         else:
-            short_nodes_degree = [[i,"%d"%i,"Node id: %d'<br>'Degree: %d'<br>' Community id: %d"%(i,short_G.degree(i),short_tmp_index),short_tmp_index,"dot","{size: 150}",short_G.degree(i) * 20] for i in short_cmty_list[item]]
+            short_nodes_degree = [[i,"%d"%i,"Node id: %d#Degree: %d# Community id: %d"%(i,short_G.degree(i),short_tmp_index),short_tmp_index,"dot","{size: 150}",short_G.degree(i) * 20] for i in short_cmty_list[item]]
 
-        short_nodes_degree.sort(key=lambda x:x[1])
+        short_nodes_degree.sort(key=lambda x:x[-1])
         short_nodes_degree.reverse()
 
         if long_G == g1:
-            short_nodes_degree[0][2] = "Node id: %d'<br>'Degree: %d'<br>' Community id:%d'<br>' feature1: %.2f'<br>'feature2: %.2f"%(short_nodes_degree[0][0] - number_nodes_of_long_graph,short_nodes_degree[0][-1]/20,short_nodes_degree[0][3],short_cmty_features[item][0],short_cmty_features[item][1]) 
+            short_nodes_degree[0][2] = "Node id: %d#Degree: %d# Community id:%d# feature1: %.2f#feature2: %.2f"%(short_nodes_degree[0][0] - number_nodes_of_long_graph,short_nodes_degree[0][-1]/20,short_nodes_degree[0][3],short_cmty_features[item][0],short_cmty_features[item][1]) 
         else:
-            short_nodes_degree[0][2] = "Node id: %d'<br>'Degree: %d'<br>' Community id:%d'<br>' feature1: %.2f'<br>'feature2: %.2f"%(short_nodes_degree[0][0],short_nodes_degree[0][-1]/20,short_nodes_degree[0][3],short_cmty_features[item][0],short_cmty_features[item][1]) 
+            short_nodes_degree[0][2] = "Node id: %d#Degree: %d# Community id:%d# feature1: %.2f#feature2: %.2f"%(short_nodes_degree[0][0],short_nodes_degree[0][-1]/20,short_nodes_degree[0][3],short_cmty_features[item][0],short_cmty_features[item][1]) 
 
         nodes_of_unmatched_community.extend(short_nodes_degree)
         short_tmp_index += 1
-
     #construct edges
     all_edges_final = []
     if long_G == g1:
